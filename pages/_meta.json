@@ -1,0 +1,14 @@
+{
+  "index": {
+    "type": "page",
+    "title": "Terbium",
+    "display": "hidden",
+    "theme": {
+      "layout": "full"
+    }
+  },
+  "docs": {
+    "type": "page",
+    "title": "Documentation"
+  }
+}

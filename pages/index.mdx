@@ -1,0 +1,171 @@
+import {Link, Tab, Tabs} from "nextra-theme-docs";
+import clsx from "clsx";
+import {useTheme} from "nextra-theme-docs";
+import {useEffect, useState} from "react";
+
+export const LargeText = () => {
+  const [resolved, setResolved] = useState();
+  const theme = useTheme();
+
+  useEffect(() => {
+    setResolved(theme.resolvedTheme ?? theme.systemTheme)
+  }, [theme])
+
+  return (
+    <h1
+      id='banner-text'
+      className={clsx(
+        "p-2 font-[1000] text-[min(6rem,15vw)] md:text-[min(6rem,8vw)] bg-gradient-to-r from-25% from-primary to-primary to-75%",
+        {
+          "via-primary-100": resolved === 'dark',
+          "via-primary-800": resolved === 'light',
+        },
+      )}
+    >
+      Easy, Fast, Robust
+    </h1>
+  )
+}
+
+<style jsx global>{`
+  #banner {
+    border-radius: 8px;
+    padding: 32px;
+    margin: 32px 0;
+  }
+  #banner-text {
+    background-size: 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-position: 0;
+  }
+  #banner-text:hover {
+    background-position: 200%;
+    transition: background-position 3s ease;
+  }
+  #banner > div.overflow-auto > div.nextra-scrollbar.nx-overflow-x-auto.nx-overflow-y-hidden.nx-overscroll-x-contain > div {
+    border: none;
+    justify-content: center;
+  }
+`}</style>
+
+<div
+  id="banner"
+  className="grid bg-gradient-to-bl from-primary-600/60 via-primary/5 via-60%"
+>
+
+<div className="text-center text-md">
+
+<LargeText />
+
+Write bug-free code that runs at native performance with ease by using **Terbium**, a high-level programming language
+that doesn't compromise in performance, readability, reliability and developer experience.
+
+</div>
+
+<div className="flex gap-x-2 items-center justify-center my-6">
+  <Link href='/docs' legacyBehavior>
+    <a className="text-lg rounded-lg font-medium px-5 py-3 bg-primary/70 hover:bg-primary transition-colors">Learn More</a>
+  </Link>
+
+</div>
+
+<div className="overflow-auto">
+
+<Tabs items={["Hello world", "Fibonacci", "FizzBuzz", "Optional values", "Error handling"]}>
+
+<Tab>
+```tb
+func main() {
+    println("Hello, world!");
+}
+```
+</Tab>
+
+<Tab>
+```tb
+func fib(n: uint) =
+    if n <= 1 then n else fib(n - 1) + fib(n - 2);
+
+func main() {
+    (0..=10).map(fib).for_each(println);
+}
+```
+</Tab>
+
+<Tab>
+```tb
+func fizzbuzz(n: uint) {
+    for i in 1..=n {
+        println(match (i % 3, i % 5) {
+            (0, 0) -> "FizzBuzz",
+            (0, _) -> "Fizz",
+            (_, 0) -> "Buzz",
+            else i to string,
+        });
+    }
+}
+
+func main() {
+    fizzbuzz(100);
+}
+```
+</Tab>
+
+<Tab>
+```tb
+// Optional values are of type T? and can be either .some(value) or .none
+// Any `value` of type T can coerce into T? by .some(value).
+
+func maybe_five() -> int? = .none;
+
+func main() {
+    println(maybe_five() else 10); // 10
+}
+```
+</Tab>
+
+<Tab>
+```tb
+import std.io.{Error, stdout};
+
+// T throws E is a type itself:
+type Result<T> = T throws Error;
+
+// throws E expands to void throws E, void being the unit type
+type VoidResult = throws Error;
+
+// Specify the return type as `throws Error` to indicate that the return value might fail
+func fallible() -> throws Error {
+    let mut out = stdout();
+    out.write("This might fail")!; // use ! to propagate the error to the function
+
+    // implied return value of `void` is coerced to `.ok(void)`
+    // in fact, any `value` of type T can be coerced to `T throws _` as `.ok(value)`
+    //
+    // this explicit type cast will result in `.ok(5)`:
+    // let x = 5 to /* `to` is the cast operator */ int throws Error;
+}
+
+func main() {
+    // Use `catch` to handle a fallible value
+    fallible() catch err {
+        eprintln($"Failed to print: {err}"); // string interpolation
+    };
+
+    // If there is absolutely no way to handle an error,
+    // you can halt the program's execution with `panic`:
+    //
+    // Note: `else` is equivalent to `catch _`
+    fallible() else panic("Oh no!");
+    // You can also use `.unwrap()` to panic with no message:
+    fallible().unwrap();
+}
+```
+</Tab>
+
+</Tabs>
+
+</div>
+
+</div>

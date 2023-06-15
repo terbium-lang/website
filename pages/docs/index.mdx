@@ -1,0 +1,60 @@
+import {Callout} from "nextra/components";
+
+# The Terbium Programming Language
+
+Welcome to the official Terbium documentation! This documentation is designed to introduce and guide you through
+writing code in the *Terbium programming language*.
+
+## Why use Terbium?
+
+Terbium is a *"high-level language that doesn't compromise in performance"*. It enables developers to write robust code
+that runs at native performance speeds, while still being easy and quick to write, read, and maintain.
+
+Terbium is designed to be:
+
+* **Concise**. Write less code wherever possible. High-level constructs and language features make Terbium elegant to write.
+* **Readable**. Being explicit and unambiguous in the code where needed while still being concise.
+* **Simple**. Complexity is abstracted away from the developer when writing a Terbium program, but low-level features are still accessable whenever needed.
+* **Performant**. With LLVM, Terbium can compile to optimized native machine code, so your high-level code won't compromise runtime performance.
+* **Robust**. Write error-free code with Terbium. Null is a concept that does not exist in Terbium, and all errors must explicitly be handled. Mutability is explicit and memory is automatically freed.
+* **Rapid**. Rapid-prototyping and developer experience is just as important as runtime performance. A *debug mode* compiles semi-optimized code that compiles fast and suppresses pedantic errors as warnings.
+* **Typed**. A comprehensive type system allows Terbium to infer the types of most values and functions at compile-time. If a type cannot be inferred, it must be explicitly specified.
+
+## Why does Terbium exist?
+
+Terbium was created to solve a problem without the trade-offs of other languages.
+
+If you wanted to write a program that runs *fast*, you would probably write it in a low-level language like C or C++.
+However, these languages fail to be robust. They are prone to memory leaks, null pointer exceptions, and other
+runtime errors. They are also verbose and difficult to read and write.
+
+The Terbium compiler is made with *Rust*, which can run just as fast as C or C++, but is much more robust.
+However, Rust introduces unique concepts such as borrow-checking, lifetimes, smart pointers, along with a strict
+compiler, which can give it a steep learning curve and slow down development. Many also complain of Rust's slow
+compile-time.
+
+If you wanted to write a program *fast* (write/develop fast, not run fast), a language with a more lenient
+compiler/runtime like Python would be a good choice. But these languages tend to be slow and easily introduce errors
+and bugs at runtime.
+
+Terbium is designed to be a language that is the best of all of these worlds. It is designed to be as fast as C or Rust,
+as reliable and robust as Rust, and as flexible, easy, and quick to learn and write as Python.
+
+## What is this documentation?
+
+This documentation is designed to be a comprehensive guide to the Terbium language. It is not a step-by-step tutorial,
+but rather a reference/manual for the language.
+
+<Callout type="info">
+
+Note that this documentation does not document any library. For documentation on the standard library, see the
+[standard library documentation](https://docs.terbium.dev/std).
+
+</Callout>
+
+<Callout type="warning">
+
+It should also be noted that both this documentation and Terbium itself are still in development, and as such, some
+features may not be fully implemented yet, and some parts of the documentation may be incomplete or out-of-date.
+
+</Callout>

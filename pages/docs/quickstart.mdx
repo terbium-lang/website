@@ -1,0 +1,222 @@
+import {Callout} from "nextra/components";
+import {Steps, Tab, Tabs} from "nextra-theme-docs";
+
+# Getting Started
+
+Let's get started with Terbium. This page will help guide you through the process of installing, compiling, and running
+your first program written in Terbium.
+
+## Quickstart
+
+<Steps>
+
+### Install Terbium
+
+<Callout type="warning">
+
+Terbium is currently in early development and this installation process is subject to change.
+
+</Callout>
+
+Currently, pre-built binaries of Terbium can be downloaded through the
+[GitHub releases page](https://github.com/terbium-lang/terbium/releases).
+
+Find the latest release for your platform [(see below)](#which-binary-should-i-download) and download the binary.
+Then, extract the binary to a directory in your `PATH` environment variable.
+
+The rest of this documentation will expect that the binary is eventually renamed to `terbium` (or `terbium.exe` on Windows), so it is advised to do so now.
+
+#### Which binary should I download?
+
+* aarch-64-apple-darwin for Apple Silicon macOS devices,
+* x86_64-apple-darwin for Intel-based macOS devices,
+* x86_64-pc-windows-msvc.exe for Windows,
+* and x86_64-unknown_linux_gnu for Linux.
+
+#### Building from source
+
+If you are unable to download a pre-built binary, you can build Terbium from source.
+
+To build Terbium from source, you will need to install the Rust toolchain. You can do so by following the instructions
+[here](https://doc.rust-lang.org/book/ch01-01-installation.html).
+
+Once you have installed Rust, clone the Terbium repository and run the following command in the root of the repository:
+
+```sh
+$ cargo build --release
+```
+
+Depending on your device, this may take a while. Once the build is complete, you can find the compiled binary in
+`target/release/terbium` (or `target/release/terbium.exe` on Windows). Follow the instructions above to add the binary
+to your PATH.
+
+### Verify Installation
+
+To verify that Terbium is installed correctly, run the following command:
+
+```sh
+$ terbium --version
+```
+
+If Terbium is installed correctly, you should see output beginning with the following:
+
+```
+Terbium v0.x.x
+```
+
+If you see this output, Terbium is installed correctly and you can move on to the next step. Otherwise, retry
+the installation process or get help in the [Discord server](https://discord.gg/FqtZ6akWpd).
+
+### Write your first program
+
+Create a new file named `main.tb` and open it in your favorite text editor. Then, write the following code:
+
+```tb filename="main.tb"
+func main() {
+    println("Hello, world!");
+}
+```
+
+### Compile your program
+
+To compile your program, run the following command:
+
+<Callout>
+
+Make sure the current working directory is the same directory as the `main.tb` file.
+
+</Callout>
+
+<Tabs items={['Windows', 'Unix (Mac/Linux)']}>
+  <Tab>
+    ```sh
+    $ terbium compile main.tb
+    ```
+  </Tab>
+  <Tab>
+    ```sh
+    $ terbium compile main.tb
+    ```
+  </Tab>
+</Tabs>
+
+### Run your program
+
+Finally, run your program with the following command:
+
+<Tabs items={['Windows', 'Unix (Mac/Linux)']}>
+  <Tab>
+    ```sh
+    $ ./main.exe
+    ```
+  </Tab>
+  <Tab>
+    ```sh
+    $ ./main
+    ```
+  </Tab>
+</Tabs>
+
+If everything went correctly, you should see the following output:
+
+```
+Hello, world!
+```
+
+</Steps>
+
+## What's going on?
+
+Terbium is primarly an **ahead-of-time compiled language**. This means that Terbium programs are compiled (translated)
+into native machine code before they are run. This is in contrast to languages like Python or JavaScript, which are
+interpreted at runtime or just-in-time compiled.
+
+This means that you have to compile your Terbium programs before you can run them. This is what the `terbium compile`
+command did for us. It took our Terbium source code and compiled it into a native executable file, `terbium`
+(`terbium.exe` on Windows). This executable file is what we ran to execute our program.
+
+### What about the `main.tb` file?
+
+The `main.tb` file is the source code for our program. It contains the instructions that the Terbium compiler used to
+generate the `terbium` executable. The `main.tb` file is not needed to *run* the program,
+but it is needed to *compile* the program. This means that:
+
+* You can delete the `main.tb` file after compiling your program, and the executable will still work.
+* You only have to distribute the compiled executable file, not the source code, to run your program on another computer.
+
+<Callout type="warning">
+
+When running any executable file on another computer, make sure that the computer is running the same operating system
+as the computer that compiled the executable. For example, if you compile your program on Windows, you cannot run it on
+a computer running macOS.
+
+We will discuss **cross-compilation** in a later section, which allows you to compile your program for a different
+operating system than the one you are currently using, solving this problem.
+
+</Callout>
+
+Let's take a closer look at the `main.tb` file:
+
+```tb filename="main.tb" showLineNumbers
+func main() {
+    println("Hello, world!");
+}
+```
+
+This is a Terbium **source file**. It contains the source code for our program. Let's break it down line-by-line:
+
+<Tabs items={["Line 1", "Line 2"]}>
+
+<Tab>
+```tb filename="main.tb" showLineNumbers {1}
+func main() {
+    println("Hello, world!");
+}
+```
+
+The first line of the file begins a **function declaration**. It declares a function named `main`. The `func{:tb}`
+keyword declares a function, and the `main` is the name of the function.
+
+A top-level `main` function is special in Terbium. It is the entry point of the program. This means that when you run
+the program, the `main` function is "implicitly" executed.
+
+#### Do I need a `main` function?
+
+No. You can write top-level Terbium code without a `main` function. However, it is not advised to do so unless you are
+writing a library or other code that is not meant to be run as a standalone program. In fact, the `main` function is:
+
+* *only* executed when the program is run as a standalone program (binary), and
+* *never* executed when used as an import from a module or package unless explicitly called (i.e. `main(){:tb}`).
+
+However, top-level code will *always* be executed, even when imported from a module or package. This could lead to
+unintended side-effects. Effectful code or code that creates *global mutable state* will emit a warning from the
+compiler.
+
+<Callout type="info">
+
+Global mutable state is any data that can be modified by any part of the program. This includes global variables,
+global constants, and global functions. Global mutable state is generally considered bad practice, and should be
+avoided when possible because it can lead to unintended behavior through data-races.
+
+</Callout>
+
+</Tab>
+
+<Tab>
+
+```tb filename="main.tb" showLineNumbers {2}
+func main() {
+    println("Hello, world!");
+}
+```
+
+The second line of the file begins a **function body**. It contains the instructions that are executed when the
+function is called. The function body is delimited by curly braces (`{` and `}`).
+
+On line 2, we see the `println` function being called. This function prints its argument and then a newline to the
+standard output. In this case, the argument is the string `"Hello, world!"`.
+
+
+</Tab>
+
+</Tabs>

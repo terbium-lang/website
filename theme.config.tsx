@@ -105,9 +105,6 @@ const config: DocsThemeConfig = {
       </div>
     )
   },
-  toc: {
-    component: <></>
-  },
 }
 
 export default config

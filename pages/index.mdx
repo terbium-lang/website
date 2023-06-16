@@ -15,7 +15,7 @@ export const LargeText = () => {
     <h1
       id='banner-text'
       className={clsx(
-        "p-2 font-[1000] text-[min(6rem,15vw)] md:text-[min(6rem,8vw)] bg-gradient-to-r from-25% from-primary to-primary to-75%",
+        "pt-2 pb-4 font-[1000] text-[min(6rem,15vw)] md:text-[min(6rem,8vw)] bg-gradient-to-r from-25% from-primary to-primary to-75% leading-tight",
         {
           "via-primary-100": resolved === 'dark',
           "via-primary-800": resolved === 'light',
@@ -54,18 +54,20 @@ export const LargeText = () => {
   className="grid bg-gradient-to-bl from-primary-600/60 via-primary/5 via-60%"
 >
 
-<div className="text-center text-md">
+<div className="text-center text-md flex flex-col">
 
 <LargeText />
 
-Write bug-free code that runs at native performance with ease by using **Terbium**, a high-level programming language
-that doesn't compromise in performance, readability, reliability and developer experience.
+<p className="self-center justify-self-center max-w-3xl text-lg">
+  Write bug-free code that runs at native performance with ease by using **Terbium**, a high-level programming language
+  that doesn't compromise in performance, readability, reliability and developer experience.
+</p>
 
 </div>
 
 <div className="flex gap-x-2 items-center justify-center my-6">
   <Link href='/docs' legacyBehavior>
-    <a className="text-lg rounded-lg font-medium px-5 py-3 bg-primary/70 hover:bg-primary transition-colors">Learn More</a>
+    <a className="text-lg text-white rounded-lg font-medium px-5 py-3 bg-primary/70 hover:bg-primary transition-colors">Learn More</a>
   </Link>
 
 </div>

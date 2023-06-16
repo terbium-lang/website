@@ -4,5 +4,8 @@
   },
   "quickstart": {
     "title": "Getting Started"
+  },
+  "fundamentals": {
+    "title": "Fundamental Concepts"
   }
 }

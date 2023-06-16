@@ -1,0 +1,71 @@
+import {Callout} from "nextra/components";
+
+# Comments and Assertions
+
+## Comments
+
+*Comments* are ignored by the compiler.
+They are used to add notes to the code to explain what it does, document it, or temporarily disable it.
+
+There are three types of comments:
+
+### Single-line comments
+
+Single line comments start with `//` and continue until the end of the line.
+
+```tb
+// single-line comment
+1 + 1 // this becomes 2
+```
+
+### Multi-line comments
+
+Multi-line comments start with `/*` and end with `*/`. They can span multiple lines.
+
+```tb
+/*
+  multi-line comment
+  this spans multiple lines
+*/
+```
+
+They can also be inlined with code:
+
+```tb
+1 + /* this will become 2 */ 1
+```
+
+### Documentation comments
+
+Documentation comments start with `///` (for "outer") or `//!` (for "inner").
+When documentation is generated, the compiler will look for these comments and use them to generate documentation.
+
+```tb
+//! This describes the module.
+
+/// This describes the function `foo`.
+func foo() {}
+```
+
+<Callout type="warning">
+  Comments do not work in string literals. The following are not comments:
+
+  ```tb
+  "/* this is not a comment */"
+  "// neither is this"
+  ```
+
+  Instead, the comments are interpreted as part of the string or character literal.
+</Callout>
+
+## Assertions
+
+Throughout this guide, we will use *assertions* to show the expected output of a piece of code.
+
+Assertions call the following built-in *functions* (more on functions later in the guide):
+
+* **`assert(value){:tb}`** - asserts that `value` is `true`.
+* **`assert_eq(left, right){:tb}`** - asserts that `left` is equal to `right`.
+* **`assert_ne(left, right){:tb}`** - asserts that `left` is not equal to `right`.
+
+At runtime, if these assertions fail, the program will panic and exit with an error.

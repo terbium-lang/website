@@ -1,0 +1,231 @@
+# Values and Expressions
+
+All runtime "values" in Terbium are represented as *expressions*. An expression is
+a syntactic construct, and it is a piece of code that can be evaluated to produce
+a value. For example, the expression `1 + 2{:tb}` evaluates to the value `3{:tb}`.
+
+There are many different kinds of expressions in Terbium, some including,
+
+* *literals*, such as `1{:tb}` and `"hello"{:tb}`. These are expressions that
+  evaluate to themselves.
+* *variables*, such as `x{:tb}` and `y{:tb}`. These are expressions that evaluate
+  to the value bound to the variable.
+* *operators*, such as `1 + 2{:tb}` and `-3{:tb}`. These are expressions that
+  evaluate to the result of applying the operator to the operands.
+* *groups*, such as `(1 + 2){:tb}` and `-(3){:tb}`. These are expressions that
+  evaluate to the value of the expression inside the group, and are used to
+  control the order of evaluation.
+
+We will take a closer look at each of these kinds of expressions.
+
+## Literals
+
+A *literal* is an expression that evaluates to itself. For example, the expression
+`1{:tb}` evaluates to the value `1{:tb}`, and the expression `"hello"{:tb}` evaluates
+to the value `"hello"{:tb}`.
+
+Literals take many forms:
+
+* *integer literals*, such as `1{:tb}` and `2{:tb}`.
+* *floating-point literals*, such as `1.0{:tb}` and `2.0{:tb}`.
+* *character literals*, such as `c'a'{:tb}`.
+* *string literals*, such as `"hello"{:tb}` and `"world"{:tb}`.
+* *boolean literals*, such as `true{:tb}` and `false{:tb}`.
+* *void*, the unit value, evaluating to `void{:tb}`. This is the value of an
+  expression that does not evaluate to anything.
+
+### Integer literals
+
+An *integer literal* can be written as a sequence of digits, optionally suffixed
+with `u` to indicate that the integer is *unsigned*. We will see more about
+unsigned integers later.
+
+Optionally, an integer literal can be prefixed with *radix modifiers*:
+
+* `0b` or `0B` for binary,
+* `0o` or `0O` for octal, and
+* `0x` or `0X` for hexadecimal.
+
+For example, `0b101{:tb}` is the same as `5{:tb}`, and `0xff{:tb}` is the same as
+`255{:tb}`.
+
+Additionally, underscores may be used to separate digits in an integer literal,
+for example, `1_000_000{:tb}` is the same as `1000000{:tb}`.
+
+### Floating-point literals
+
+A *floating-point literal* evaluates to a floating-point number. A floating-point
+number is a number with a fractional part, such as `1.5{:tb}` or `3.14{:tb}`.
+
+A floating-point literal can have underscores to separate digits, for example,
+`1_000.000_001{:tb}` is the same as `1000.000001{:tb}`.
+
+You can also use `e` or `E` to indicate scientific notation, for example,
+`1e6{:tb}` is the same as `1000000{:tb}`, and `1.5e-3{:tb}` is the same as
+`0.0015{:tb}`.
+
+### Character literals
+
+A *character literal* evaluates to a character. A character literal is written
+as a one-character string prefixed with `c`, for example `c'A'{:tb}` or `c'\n'{:tb}`.
+
+We will see more about characters later.
+
+### String literals
+
+A *string literal* evaluates to a string. A string literal is written as a
+sequence of characters surrounded by single or double quotes, for example `"hello"{:tb}`
+
+Strings can span multiple lines:
+
+```tb
+"this string
+spans multiple lines"
+```
+
+#### Escape sequences
+
+Strings can also contain escape sequences:
+
+| Sequence          | Description                           |
+|-------------------|---------------------------------------|
+| `\n`              | Newline                               |
+| `\r`              | Carriage Return                       |
+| `\t`              | Tab                                   |
+| `\b`              | Backspace                             |
+| `\f`              | Form Feed                             |
+| `\\`              | Literal backslash                     |
+| `\'`              | Literal `'`                           |
+| `\"`              | Literal `"`                           |
+| `\0` \[1]         | Null byte                             |
+| `\x12` \[2]       | Character by hex codepoint (2 digits) |
+| `\u1234` \[2]     | Character by hex codepoint (4 digits) |
+| `\U12345678` \[2] | Character by hex codepoint (8 digits) |
+
+\[1] Because strings will **always** have an encoding, null-bytes can only be placed in byte-string literals. \
+\[2] Numbers are a placeholder of a valid hex value of the specified length, e.g. `\u200b`
+
+```tb
+'Here\'s a contraction with apostrophes'
+"This is a \"quote\" with quotation marks"
+'This string has\nnewlines'
+'An em dash: \u2014'
+```
+
+#### Raw strings
+
+Strings can also be *raw*, which means that escape sequences are not interpreted.
+A raw string is written as a string prefixed with `~`, for example `~"hello \n world"{:tb}`
+is the same as `"hello \\n world"{:tb}`.
+
+#### Quote-escaped strings
+
+A cleaner way to escape quotes is to use quote-escaped strings. A quote-escaped
+string is written by prefixing the string with any N number of pound symbols (`#`), and then
+suffixing the string with the same number of pound symbols.
+
+For example, `#"hello "world""#{:tb}` is the same as `"hello \"world\""{:tb}`,
+and `###"hello #"world"#"###{:tb}` is the same as `"hello #\"world\""{:tb}`.
+
+#### Interpolated strings
+
+Strings can also be *interpolated*, which means that expressions can be evaluated
+inside the string. An interpolated string is written as a string prefixed with
+`$`, any then any interpolated expressions are surrounded by `{` and `}`.
+Use `{{` and `}}` to escape the braces.
+
+For example, `$"1 + 2 = {1 + 2}"{:tb}` is the same as `"1 + 2 = 3"{:tb}`. The internals
+of string interpolation are explained later.
+
+### Boolean literals
+
+A *boolean literal* evaluates to a boolean value. A boolean represents a truth
+value, and can be either `true{:tb}` or `false{:tb}`.
+
+### Void
+
+*Void* is the unit value, and is written as `void{:tb}`. Void is the value of an
+expression that does not evaluate to anything, and it should not be commonly used.
+
+## Operators and Arithmetic
+
+An *operator* is an expression that evaluates to the result of applying the
+operator to the operands. For example, `1 + 2{:tb}` evaluates to `3{:tb}`, and
+`-3{:tb}` evaluates to `-3{:tb}`.
+
+Operators can be *unary*, *binary*, or *ternary*.
+
+### Unary operators
+
+A *unary operator* is an operator that takes one operand. For example, `-3{:tb}`
+is a unary operator, because it takes one operand, `3{:tb}`.
+
+There are two types of unary operators: *prefix* and *postfix*. A *prefix* unary
+operator is written before the operand, for example `-3{:tb}`. A *postfix* unary
+operator is written after the operand. There are no postfix unary operators in
+Terbium.
+
+The following are the unary operators in Terbium:
+
+| Operator | Description |
+|----------|-------------|
+| `-`      | Negation    |
+| `!`      | Logical not |
+| `~`      | Bitwise not |
+
+### Binary operators
+
+A *binary operator* is an operator that takes two operands. For example,
+`1 + 2{:tb}` is a binary operator, because it takes two operands, `1{:tb}` and
+`2{:tb}`. All binary operators in Terbium are *infix*, which means that they are
+written between the operands.
+
+The following are the binary operators in Terbium:
+
+| Operator | Description              |
+|----------|--------------------------|
+| `+`      | Addition                 |
+| `-`      | Subtraction              |
+| `*`      | Multiplication           |
+| `/`      | Division                 |
+| `%`      | Modulo                   |
+| `**`     | Exponentiation           |
+| `&`      | Bitwise and              |
+| `\|`     | Bitwise or               |
+| `^`      | Bitwise xor              |
+| `<<`     | Bitwise left shift       |
+| `>>`     | Bitwise right shift      |
+| `&&`     | Logical and              |
+| `\|\|`   | Logical or               |
+| `==`     | Equality                 |
+| `!=`     | Inequality               |
+| `<`      | Less than                |
+| `<=`     | Less than or equal to    |
+| `>`      | Greater than             |
+| `>=`     | Greater than or equal to |
+| `..`     | Range                    |
+| `..=`    | Inclusive range          |
+
+
+There are also *keyword operators*, which are operators that are written as
+keywords. The following are the keyword operators in Terbium:
+
+| Operator  | Description   |
+|-----------|---------------|
+| `is{:tb}` | Type equality |
+| `in{:tb}` | Contains      |
+| `to{:tb}` | Type-cast     |
+
+### Ternary operators
+
+A *ternary operator* is an operator that takes three operands. The *ternary if*
+or *inline if* operator is the only ternary operator in Terbium. It is written
+as `if CONDITION then THEN_VALUE else ELSE_VALUE{:tb}`.
+
+For example, `if 1 > 2 then "yes" else "no"{:tb}` evaluates to `"no"{:tb}`. Ternary operators desugar to standard
+*if-statements*, which are explained in the [Control Flow](/docs/fundamentals/control) section.
+
+## Grouping (Parentheses)
+
+Similar in mathematics, parentheses can be used to group expressions so that they are
+evaluated first. For example, `(1 + 2) * 3{:tb}` evaluates to `9{:tb}`.

@@ -81,26 +81,17 @@ func main() {
 
 To compile your program, run the following command:
 
+```sh
+$ terbium compile main.tb
+```
+
 <Callout>
 
 Make sure the current working directory is the same directory as the `main.tb` file.
 
 </Callout>
 
-<Tabs items={['Windows', 'Unix (Mac/Linux)']}>
-  <Tab>
-    ```sh
-    $ terbium compile main.tb
-    ```
-  </Tab>
-  <Tab>
-    ```sh
-    $ terbium compile main.tb
-    ```
-  </Tab>
-</Tabs>
-
-### Run your program
+  ### Run your program
 
 Finally, run your program with the following command:
 
@@ -182,8 +173,8 @@ the program, the `main` function is "implicitly" executed.
 
 #### Do I need a `main` function?
 
-No. You can write top-level Terbium code without a `main` function. However, it is not advised to do so unless you are
-writing a library or other code that is not meant to be run as a standalone program. In fact, the `main` function is:
+No. You can write top-level Terbium code without a `main` function. However, it is not advised to do so, especially if
+you are writing a library or other code that is not meant to be run as a standalone program. The `main` function is:
 
 * *only* executed when the program is run as a standalone program (binary), and
 * *never* executed when used as an import from a module or package unless explicitly called (i.e. `main(){:tb}`).
@@ -215,7 +206,6 @@ function is called. The function body is delimited by curly braces (`{` and `}`)
 
 On line 2, we see the `println` function being called. This function prints its argument and then a newline to the
 standard output. In this case, the argument is the string `"Hello, world!"`.
-
 
 </Tab>
 

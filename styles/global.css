@@ -1,0 +1,13 @@
+:is(html[class~=light] .shiki-light) {
+  display: block;
+}
+:is(html[class~=dark] .shiki-dark) {
+  display: none;
+}
+
+:is(html[class~=light] .shiki-light) {
+  display: block;
+}
+:is(html[class~=dark] .shiki-dark) {
+  display: none;
+}

@@ -1,0 +1,264 @@
+import {Callout} from "nextra/components";
+
+# Data Types
+
+All values in Terbium have a *type*. The type of a value determines the structure of the value and the operations
+and behavior that can be performed on it. For example the values `1{:tb}` and `"hello"{:tb}` are both values, but they
+have different types. Certain operations that can be performed on a number cannot be performed on a string, and
+vice-versa.
+
+<Callout type="info">
+  There isn't actually any builtin type that vaguely represents any *number*, rather the proper type for numbers include
+  *integers* and *floating-point numbers*, which are explained later.
+</Callout>
+
+## Introduction to the Type System
+
+Terbium is a **statically-typed** language. This means that every value has a type and that
+the type of any value must be known at compile-time. This is in contrast to **dynamically-typed** languages, where
+the type of a value may not be known until runtime.
+
+Terbium is also a **strongly-typed** language. This means that the type of a value is strictly enforced. This is in
+contrast to **weakly-typed** languages, where the type of a value may be ignored or coerced. For example, Terbium will
+forbid you from adding an integer to a string.
+
+## Type Inference
+
+While many statically-typed languages require you to explicitly declare the type of a value or variable, Terbium can
+perform **type-inference**. This means that the compiler can automatically determine the type of a value or variable
+based on the context in which it is used. For example, the integer-literal `1{:tb}` looks like an integer to the
+compiler, and it couldn't be anything else like a string.
+
+### All variables have a type
+
+Similar to all values having a type, all variables enforce a type as well. This means that once a variable is declared,
+it can only be assigned values of the same type. This way, the compiler can ensure that the type of a variable is
+consistent throughout the program.
+
+With type-inference, you usually do not need to explicitly declare the type of a variable. The compiler can infer the
+type of a variable based on the type of the value it is assigned. Nowhere in `let x = 1{:tb}` is the type of `x`
+declared, rather the compiler infers that `x` must be an integer because it is assigned an integer.
+
+### Type Annotations
+
+If you want to explicitly declare the type of a variable, you can use a **type annotation**. A type annotation is
+a hint to the compiler that the variable should be of a certain type. You can use a type annotation by adding a colon
+and the type name after the variable name. For example, `let x: int = 1{:tb}` explicitly declares that `x` is an
+integer.
+
+```text filename="Grammar: Variable declaration"
+"let" IDENT [":" TYPE] ["=" EXPR]
+```
+
+## Scalar Types
+
+A **scalar type** is a type that represents a single value. Terbium provides four kinds of *primitive*
+scalar types: integers, floating-point numbers, booleans, characters, and the unit type *void*.
+
+### Integer Types
+
+An *integer* is a number that can be written without a fractional component. Integers can take up a varying amount of
+space in memory, and they can also have a sign (positive or negative) or be unsigned (positive only).
+
+There is an integer type for both *signed* and *unsigned* integers: `int{:tb}` and `uint{:tb}`. The `int{:tb}` type
+represents a signed integer, and the `uint{:tb}` type represents an unsigned integer.
+
+There are also integer types for different sizes of integers. The size of an integer is the number of bits it takes up
+in memory. The larger an integer's size, the greater range of values it can represent. For example, an 8-bit unsigned
+integer can only represent values from 0 to 255, while a 32-bit unsigned integer can represent values from 0 to 4,294,967,295.
+
+Types are provided for all $N$-bit integers, signed and unsigned, where $N$ is a power of 2 and $8 \le N \le 128$:
+
+| Size                                | Signed        | Unsigned       |
+|-------------------------------------|---------------|----------------|
+| 8 bits                              | `int8{:tb}`   | `uint8{:tb}`   |
+| 16 bits                             | `int16{:tb}`  | `uint16{:tb}`  |
+| 32 bits                             | `int32{:tb}`  | `uint32{:tb}`  |
+| 64 bits                             | `int64{:tb}`  | `uint64{:tb}`  |
+| 128 bits                            | `int128{:tb}` | `uint128{:tb}` |
+| Infer size or default to 32 bits    | `int{:tb}`    | `uint{:tb}`    |
+| Pointer size, architecure-dependent | `intptr{:tb}` | `uintptr{:tb}` |
+
+<Callout>
+  Integers can only hold values within a certain range. Values below this range result in *integer underflow*, and
+  values above this range result in *integer overflow*.
+
+  The range for a *signed* integer of size $N$ bits is $-2^{N-1}$ to $2^{N-1}-1$. \
+  The range for an *unsigned* integer of size $N$ bits is $0$ to $2^N-1$.
+</Callout>
+
+<Callout type="info">
+  The `intptr{:tb}` and `uintptr{:tb}` types are special types that are the same size as a pointer on the current
+  architecture. Pointer-sized integers are used when working with pointer arithmetic or working with indexing into
+  a collection. The size of a pointer is 32 bits on 32-bit architectures and 64 bits on 64-bit architectures.
+</Callout>
+
+### Floating-point Types
+
+A *floating-point number* is a number that can be written with a fractional component. Floating-point numbers can take
+up either 32 or 64 bits in memory. The larger the size of a floating-point number, the greater range of values it can
+represent and the more precise it can be.
+
+There are two floating-point types: `float32{:tb}` and `float64{:tb}`. The `float32{:tb}` type represents a 32-bit
+floating-point number, and the `float64{:tb}` type represents a 64-bit floating-point number. The `float{:tb}` type
+is an alias for `float64{:tb}`.
+
+<Callout>
+  Floating-point numbers are not precise. This means that they cannot represent every possible number within their
+  range. This is why conditions like `0.1 + 0.2 == 0.3{:tb}` are false. This is why you should not use floating-point
+  numbers for precision-sensitive calculations.
+
+  A workaround for comparing floating-point numbers is to use an *epsilon* value. An epsilon value is a small number
+  that acts as a margin of error for floating-point comparisons. For example, the previous condition can be rewritten
+  as `0.1 + 0.2 - 0.3 < 0.0001{:tb}`. The episilon value used here is `0.0001{:tb}`. A convenience `EPSILON` constant
+  is associated with floating-point types for this purpose (e.g. `0.1 + 0.2 - 0.3 < float.EPSILON{:tb}`).
+
+  The range for a 32-bit floating-point number is approximately $-3.4028235 \times 10^{38}$ to $3.4028235 \times 10^{38}$. \
+  The range for a 64-bit floating-point number is approximately $-1.797693 \times 10^{308}$ to $1.797693 \times 10^{308}$. \
+  The exact minimum and maximum values for floating-point numbers can be found as the associated constants `float.MIN{:tb}`
+  and `float.MAX{:tb}`.
+</Callout>
+
+### Boolean Type
+
+The `bool{:tb}` type represents a boolean value. A boolean value can either be `true{:tb}` or `false{:tb}`. Booleans
+are used for conditions and control flow and represent the truth value of a condition, such as *whether x is equal to 1*.
+
+The main way to use boolean values is through *conditionals*, such as an if expression. Conditionals will be covered
+in the [Control Flow](/docs/fundamentals/control) section.
+
+### Character Type
+
+The `char{:tb}` type represents a single Unicode character. A character is a single symbol, such as a letter, number,
+or punctuation mark. They are represented by a Unicode Scalar Value, which is four bytes in size. Characters are
+written as a single character surrounded by quotes, then prefixed with a `c` (e.g. `c'a'{:tb}` or `c'😎'{:tb}`).
+
+### Void Type
+
+The `void{:tb}` type represents the absence of a value. It is used to indicate that a function or expression does not
+return a value. This is usually referred to as the *unit type* in other languages. The only value of the `void{:tb}`
+type is `void{:tb}`, and it is compatible with no other type.
+
+The concept of *void* is not like *null* in other languages. *Void* is a type itself and is not compatible with any
+other type. *Null* in many other languages can be used in place of any type, which can lead to errors. While *null*
+can be used to specify the absence of a value that *might* exist, *void* is not. This is left up to [optional types](#optional-types).
+
+## Compound Types
+
+Compound types are types that are made up of other types. There are four primitive compound types: tuples,
+fixed-size arrays, array slices, and strings.
+
+### Tuples
+
+A *tuple* is a fixed-size collection of values. It is a way of grouping together values with a variety of types into
+a single value. Tuples are written as a comma-separated list of values surrounded by parentheses. Its type is written
+similarly, but with the types of the values instead. For example:
+
+```tb
+(1, 2, 3) // A tuple of three integers
+(1, 2.0, c'a') // A tuple of an integer, a float, and a character
+
+let my_tuple: (int, float, char) = (1, 2.0, c'a') // explicit type annotation
+let my_tuple = (1, 2.0, c'a') // type inference
+```
+
+To access individual elements of a tuple, you can use *tuple indexing*. Tuple indexing is done by writing the name of
+the tuple followed by a period and the index of the element you want to access. The index of the first element is `0`,
+and the index of the last element is `length of tuple - 1`. For example:
+
+```tb
+let my_tuple = (1, 2.0, 'a')
+
+assert_eq(my_tuple.0, 1);
+assert_eq(my_tuple.1, 2.0);
+assert_eq(my_tuple.2, c'a');
+```
+
+### Fixed-size Arrays
+
+An array can also store a collection of multiple values is with an array. Unlike a tuple, every element of an array must
+have the same type. An array is written as a comma-separated list of values surrounded by square brackets.
+
+Terbium supports both *fixed-size* and *growable* arrays. Growable arrays require the use of a *memory allocator* which
+is not considered "primitive", so they will be covered in a later section. We will focus on fixed-size arrays for now.
+
+A *fixed-size array* is an array whose size is known at compile-time. The type of a fixed-size array is written as
+`[ELEMENT_TYPE; LENGTH]`, where `ELEMENT_TYPE` is the type of each element and `LENGTH` is the number of elements in
+the array.
+
+For example:
+
+```tb
+[1, 2, 3] // A fixed-size array of three integers
+[1, 2.0, 3] // Error: all elements must have the same type
+
+let my_array: [int; 3] = [1, 2, 3] // explicit type annotation
+let my_array = [1, 2, 3] // type inference
+```
+
+You can also initialize an array with a single value repeated a certain number of times. This is done by writing the
+value, followed by a semicolon, followed by the number of times to repeat the value. For example:
+
+```tb
+let arr = [0; 5];
+
+assert_eq(arr, [0, 0, 0, 0, 0]);
+```
+
+You can access an element of an array by using the *index operator*, in which the index of the element is written
+inside square brackets after the array. Arrays are *zero-indexed*, meaning that the first element of an array is at
+index `0`, and the last element is at index `LENGTH - 1`. Negative indices will count from the end of the array, i.e.
+when trying to access a negative index $-{N}$, the index is expanded into $array\_length - N$. For example:
+
+```tb
+let my_array = [1, 2, 3];
+assert_eq(my_array[0], 1);
+
+// Use variables as indices too:
+let index = 1;
+assert_eq(my_array[index], 2);
+
+// Negative indices count from the end of the array:
+assert_eq(my_array[-1], 3);
+```
+
+Indexing an array is bounds-checked, meaning that if the index is out of bounds, an error will be thrown. For example:
+
+```tb
+let my_array = [1, 2, 3];
+my_array[3] // Error: index out of bounds
+```
+
+This error is usually caught at compile-time, but can also be a runtime error if the index is not known at
+compile-time. For this reason, if you are unsure if an index is out of bounds, you can use the `get` *method* instead,
+which returns an *optional value* for the element so that you can handle the invalid index yourself. Optional values
+will be covered in the [Optional Types](#optional-types) section, and methods will be covered in the
+[Methods](/docs/methods) section:
+
+```tb
+let my_array = [1, 2, 3];
+
+assert_eq(my_array.get(3), .none); // We will cover the .none value in the Optional Types section
+```
+
+### Array Slices
+
+An *array slice* is a view into an array. It is a way of referencing a subset of an array without needing to allocate
+a new growable array. Array slices cannot be created directly, but are created by taking a *slice* of an array:
+
+```tb
+let my_array = [1, 2, 3, 4, 5];
+let my_slice = my_array[1..4]; // A slice of the array from index 1 to 4 (exclusive)
+
+assert_eq(my_slice, [2, 3, 4]);
+```
+
+The `1..4{:tb}` is called a *range*. A range is a way of specifying a start and end value and is discussed more in the
+[Range Types](#range-types) section.
+
+The types of array slices are written as `[ELEMENT_TYPE]{:tb}`, e.g.:
+
+```tb
+let my_array = [1, 2, 3, 4, 5];
+let my_slice: [int] = my_array[1..4];
+```

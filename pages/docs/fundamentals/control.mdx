@@ -1,0 +1,175 @@
+import {Callout} from "nextra/components";
+
+# Control Flow
+
+Control flow is a term used to describe features and constructs that allow you to control the flow of execution of your
+code. The most common types of control flow constructs are *conditionals* and *loops*.
+
+## Conditionals
+
+Conditionals allow you to execute code based on the result of a boolean expression {'\u2014'} to run code based on
+whether a certain *condition* is met.
+
+### What are conditions?
+
+A *condition* is a boolean expression that evaluates to either `true{:tb}` or `false{:tb}`. It represents whether a
+certain truth is true. For example, `5 > 0{:tb}` is a condition that asks "is 5 greater than 0?". If the answer is
+yes, the condition is `true{:tb}`. If the answer is no, the condition is `false{:tb}`.
+
+### The `if` statement
+
+The *if-statement* is the most basic conditional statement. It executes a block of code if a specified condition is
+`true{:tb}`. The general syntax of an if statement is:
+
+```tb
+if CONDITION {
+    // code to execute if the condition is true
+}
+```
+
+Here is an example that demonstrates the use of an if statement:
+
+```tb
+let x = 5;
+
+if x > 0 {
+    println("x is positive");
+}
+```
+
+In this example, the condition is `x > 0{:tb}`. If this condition is true, the code inside the block will be executed.
+In this case, `x{:tb}` is `5{:tb}`, which is greater than `0{:tb}`, so the code inside the block will be executed.
+
+### The `else` block
+
+You can optionally attach an *`else{:tb}`-block* to an if-statement to make it execute a different block of code if the
+condition is `false{:tb}`. The else statement does not have a condition to check.
+The general syntax of an if statement with an else block is:
+
+```tb
+if CONDITION {
+    // code to execute if the condition is true
+} else {
+    // code to execute if the condition is false
+}
+```
+
+Here is an example that demonstrates the use of an if statement with an else block:
+
+```tb
+let x = -5;
+
+if x > 0 {
+    println("x is positive");
+} else {
+    println("x is negative");
+}
+```
+
+This example would print `x is negative` because `x{:tb}` is `-5{:tb}`, which is not greater than `0{:tb}`.
+
+### The `else if` block
+
+You can optionally attach an *`else if`-blocks* in an if-statement. An `else if{:tb}` statement to specify additional
+conditions to be checked if the previous conditions in the if statement are `false{:tb}`.
+It allows you to chain multiple conditions together. The general syntax of an else if statement is:
+
+```tb
+if FIRST_CONDITION {
+    // code to execute if the first condition is true
+} else if SECOND_CONDITION {
+    // code to execute if the second condition is true and the first condition is false
+} else {
+    // code to execute if all conditions are false
+}
+```
+
+Here is the previous example, but with an `else if` block:
+
+```tb
+let x = 20;
+
+if x < 5 {
+    println("x is less than 5");
+} else if x > 5 {
+    println("x is greater than 5");
+} else {
+    println("x is equal to 5");
+}
+```
+
+This example would print `x is greater than 5` because `x{:tb}` is `20{:tb}`, which is greater than `5{:tb}`.
+
+### Logical Operators
+
+Logical operators allow you to combine the logic of multiple conditions. There are three logical operators:
+
+- `left && right{:tb}`: The *and* operator returns `true{:tb}` if both `left{:tb}` and `right{:tb}` are `true{:tb}`.
+- `left || right{:tb}`: The *or* operator returns `true{:tb}` if either `left{:tb}` or `right{:tb}` is `true{:tb}`.
+- `!condition{:tb}`: The *not* operator returns `true{:tb}` if `condition{:tb}` is `false{:tb}`.
+
+And remember, if a boolean isn't `true{:tb}`, it's `false{:tb}`.
+
+Here is an example that demonstrates the use of logical operators:
+
+```tb
+let x = 5;
+let y = 10;
+
+// is both x and y greater than 0?
+if x > 0 && y > 0 {
+    println("x and y are positive");
+}
+```
+
+This example would print `x and y are positive` because both `x{:tb}` and `y{:tb}` are greater than `0{:tb}`.
+
+#### De Morgan's Laws
+
+De Morgan's Laws are a set of rules that allow you to simplify compound boolean expressions. They include:
+
+- `!(left && right){:tb}` is equivalent to `!left || !right{:tb}`
+- `!(left || right){:tb}` is equivalent to `!left && !right{:tb}`
+
+Applying these rules to complex boolean expressions can make them easier to understand.
+
+#### Short-Circuit Evaluation
+
+Short-circuit evaluation is a feature of logical operators that allows you to write more efficient code. It allows you
+to write code that only evaluates the minimum number of conditions necessary to determine the result of a boolean
+expression.
+
+For example, if you have an `&&{:tb}` expression, the right side of the expression will only be evaluated if the left
+side is `true{:tb}`. This is because if the left side is `false{:tb}`, the entire expression will be `false{:tb}` no
+matter what the right side is. This means that if the left side is `false{:tb}`, the right side will not be evaluated.
+
+Similarly, if you have an `||{:tb}` expression, the right side of the expression will only be evaluated if the left
+side is `false{:tb}`.
+
+So:
+
+```tb
+true && println("Hello, world!"); // prints "Hello, world!"
+false && println("Hello, world!"); // does not print "Hello, world!"
+```
+
+#### Booleans vs. Truthy values
+
+After reading the previous example, you might be surprised to see that `println("Hello, world!"){:tb}` is valid in
+a logical operator. Whereas conditional statements like *if-statements* take booleans *only* as conditions,
+logical operators take a *truthy value*, which include all values that support an explicit type-cast to `bool{:tb}`.
+
+## Loops
+
+Loops allow you to execute a block of code multiple times. The most basic type of loop is the *while-loop*. It is a
+*conditional loop*, which means that it continuously executes a block of code based on a condition.
+Specifically, a *while-loop* executes a block of code as long as a specified condition is `true{:tb}`. The general
+syntax of a while-loop is:
+
+```tb
+while CONDITION {
+    // code to execute while the condition is true
+}
+```
+
+

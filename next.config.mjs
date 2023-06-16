@@ -1,17 +1,20 @@
 import nextra from 'nextra'
 import { getHighlighter } from 'shiki'
+import { readFileSync } from 'fs'
 
 const withNextra = nextra({
   theme: 'nextra-theme-docs',
   themeConfig: './theme.config.tsx',
   staticImage: true,
   latex: true,
-  flexsearch: {
-    codeblocks: false
-  },
+  flexsearch: true,
   defaultShowCopyCode: true,
   mdxOptions: {
     rehypePrettyCodeOptions: {
+      // theme: {
+      //   dark: JSON.parse(readFileSync('./public/syntax/arctis_dark.json', 'utf-8')),
+      //   light: JSON.parse(readFileSync('./public/syntax/arctis_light.json', 'utf-8')),
+      // },
       getHighlighter: options => getHighlighter({
         ...options,
         langs: [
@@ -19,7 +22,7 @@ const withNextra = nextra({
             id: 'terbium',
             scopeName: 'source.terbium',
             aliases: ['tb', 'trb'],
-            path: '../../public/terbium.tmLanguage.json',
+            path: '../../public/syntax/terbium.tmLanguage.json',
           },
           'shell'
         ]

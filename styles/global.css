@@ -1,13 +1,7 @@
-:is(html[class~=light] .shiki-light) {
-  display: block;
-}
-:is(html[class~=dark] .shiki-dark) {
+html[class~=dark] :is(pre[data-theme='light'], code[data-theme='light']) {
   display: none;
 }
 
-:is(html[class~=light] .shiki-light) {
-  display: block;
-}
-:is(html[class~=dark] .shiki-dark) {
+html[class~=light] :is(pre[data-theme='dark'], code[data-theme='dark']) {
   display: none;
 }

@@ -13,5 +13,8 @@
   },
   "types": {
     "title": "Data Types"
+  },
+  "control": {
+    "title": "Control Flow"
   }
 }

@@ -111,24 +111,24 @@ x = 2;
   <Tab>
 ```ansi
 [1;31merror[0m (E116): [1mcannot reassign to immutable variable[0m
-[38;5;246m┌[0m[38;5;246m[[0mmain.tb:2:1[38;5;246m][0m
-[38;5;246m│[0m
+  [38;5;246m┌[0m[38;5;246m[[0mtest.trb:2:1[38;5;246m][0m
+  [38;5;246m│[0m
 [38;5;250m2[0m [38;5;246m│[0m [36mx[0m = 2;
-[38;5;246m│[0m [36m^[0m cannot reassign to immutable variable `x`
-[38;5;246m─[0m[38;5;246m┘[0m
+  [38;5;246m│[0m [36m^[0m cannot reassign to immutable variable `x`
+ [38;5;246m─[0m[38;5;246m┘[0m
 `x` was defined as immutable here:
-[38;5;246m┌[0m[38;5;246m[[0mmain.tb:1:5[38;5;246m][0m
-[38;5;246m│[0m
+  [38;5;246m┌[0m[38;5;246m[[0mtest.trb:1:5[38;5;246m][0m
+  [38;5;246m│[0m
 [38;5;250m1[0m [38;5;246m│[0m let [36mx[0m = 1;
-[38;5;246m│[0m     [36m^[0m `x` defined as immutable here
-[38;5;246m─[0m[38;5;246m┘[0m
+  [38;5;246m│[0m     [36m^[0m `x` defined as immutable here
+ [38;5;246m─[0m[38;5;246m┘[0m
 
 [1;38;5;43mfix:[0m add `mut` to make the binding mutable
-[38;5;246m┌[0m[38;5;246m[[0mmain.tb:1:5[38;5;246m][0m
-[38;5;246m│[0m
+  [38;5;246m┌[0m[38;5;246m[[0mtest.trb:1:5[38;5;246m][0m
+  [38;5;246m│[0m
 [38;5;250m1[0m [38;5;246m│[0m let [32mmut [0mx = 1;
-[38;5;246m│[0m     [32m++++[0m
-[38;5;246m─[0m[38;5;246m┘[0m
+  [38;5;246m│[0m     [32m++++[0m
+ [38;5;246m─[0m[38;5;246m┘[0m
 ```
   </Tab>
 </Tabs>
@@ -359,7 +359,7 @@ const TAU = 2 * PI;
 println(TAU);
 ```
 
-The compiler will *desguar* the code into:
+The compiler will *desugar* the code into:
 
 ```tb
 const PI = 3.14;

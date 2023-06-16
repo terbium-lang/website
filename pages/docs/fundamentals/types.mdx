@@ -50,7 +50,7 @@ integer.
 "let" IDENT [":" TYPE] ["=" EXPR]
 ```
 
-## Scalar Types
+## Primitive Scalar Types
 
 A **scalar type** is a type that represents a single value. Terbium provides four kinds of *primitive*
 scalar types: integers, floating-point numbers, booleans, characters, and the unit type *void*.
@@ -141,12 +141,13 @@ type is `void{:tb}`, and it is compatible with no other type.
 
 The concept of *void* is not like *null* in other languages. *Void* is a type itself and is not compatible with any
 other type. *Null* in many other languages can be used in place of any type, which can lead to errors. While *null*
-can be used to specify the absence of a value that *might* exist, *void* is not. This is left up to [optional types](#optional-types).
+can be used to specify the absence of a value that *might* exist, *void* is not. This is left up to
+[optional types](/docs/enums#optional-types).
 
-## Compound Types
+## Primitive Compound Types
 
-Compound types are types that are made up of other types. There are four primitive compound types: tuples,
-fixed-size arrays, array slices, and strings.
+Compound types are types that are made up of other types. There are three primitive compound types: tuples,
+fixed-size arrays, and array slices.
 
 ### Tuples
 
@@ -232,13 +233,23 @@ my_array[3] // Error: index out of bounds
 This error is usually caught at compile-time, but can also be a runtime error if the index is not known at
 compile-time. For this reason, if you are unsure if an index is out of bounds, you can use the `get` *method* instead,
 which returns an *optional value* for the element so that you can handle the invalid index yourself. Optional values
-will be covered in the [Optional Types](#optional-types) section, and methods will be covered in the
+will be covered in the [Optional Types](/docs/enums#optional-types) section, and methods will be covered in the
 [Methods](/docs/methods) section:
 
 ```tb
 let my_array = [1, 2, 3];
 
 assert_eq(my_array.get(3), .none); // We will cover the .none value in the Optional Types section
+```
+
+To change the value of an element in an array, you can use the *index assignment operator*, which is written as the
+index of the element followed by an equals sign and the new value. For example:
+
+```tb /mut/
+let mut my_array = [1, 2, 3]; // Add the mut keyword to make the array mutable
+my_array[0] = 4;
+
+assert_eq(my_array, [4, 2, 3]);
 ```
 
 ### Array Slices
@@ -262,3 +273,107 @@ The types of array slices are written as `[ELEMENT_TYPE]{:tb}`, e.g.:
 let my_array = [1, 2, 3, 4, 5];
 let my_slice: [int] = my_array[1..4];
 ```
+
+Then, you can access and modify elements of the slice just like you would an array:
+
+```tb /mut/
+let mut my_array = [1, 2, 3, 4, 5];
+let my_slice = mut my_array[1..4];
+
+assert_eq(my_slice[0], 2);
+
+my_slice[0] = 6;
+assert_eq(my_slice[0], 6);
+assert_eq(my_array, [1, 6, 3, 4, 5]);
+```
+
+#### String Slices
+
+The special `string{:tb}` type is interally just a `[uint8]{:tb}` with additional UTF-8 validation. Unlike slices,
+you cannot modify a string slice.
+
+String-literals are represented as `string{:tb}`s in Terbium. For example:
+
+```tb
+let my_string = "Hello, world!";
+
+assert_eq(my_string[0..1], "H"); // Taking a slice of a string slice returns another string slice
+assert_eq(my_string[0], c'H'); // Taking a single character from a string slice returns a character
+```
+
+As noticed, the indexing operation on a string slice is special in that it returns a single character instead of a byte,
+since a byte could represent only a part of a character but not the whole character.
+
+## Range Types
+
+A *range* is a value that specifies a start and end value. Ranges are used in a variety of places in Terbium, such as
+slicing arrays, iterating over a range of values, and more.
+
+There are two types of ranges in Terbium: *inclusive* and *exclusive*. An inclusive range is written as
+`START..=END{:tb}`, and an exclusive range is written as `START..END{:tb}`.
+
+Furthermore, the `START{:tb}` and `END{:tb}` values can be omitted, in which case the range will either become
+*half-open* if the start value is omitted, or *full*/*fully open* if both values are omitted.
+
+The following shows the corresponding mathematical ranges for each type of range:
+
+| Range Syntax       | Type                              | Mathematical Range  |
+|--------------------|-----------------------------------|---------------------|
+| `start..end{:tb}`  | `Range<Start, End>{:tb}`          | $[start, end)$      |
+| `start..=end{:tb}` | `RangeInclusive<Start, End>{:tb}` | $[start, end]$      |
+| `..end{:tb}`       | `RangeTo<End>{:tb}`               | $(-\infty, end)$    |
+| `..=end{:tb}`      | `RangeToInclusive<End>{:tb}`      | $(-\infty, end]$    |
+| `start..{:tb}`     | `RangeFrom<Start>{:tb}`           | $[start, \infty)$   |
+| `..{:tb}`          | `RangeFull{:tb}`                  | $(-\infty, \infty)$ |
+
+...where the meaning of $-\infty$ and $\infty$ are implementation-defined.
+
+## The `_` type
+
+The `_` type is a special type that can be said to be the *inference* or *auto* type. Remember, type annotations are
+*hints* to the compiler, but they do not need to fully specify the type of a value. You can use the `_` type to
+tell the compiler to infer *just that part* of the type.
+
+For example, recall tuples, which are a collection of values of different types. Terbium is perfectly capable of
+inferring the types of the values in a tuple:
+
+```tb
+let my_tuple = (1, 2, 3); // The compiler infers the type of my_tuple to be (int, int, int)
+```
+
+Or, you can fully specify the type of the tuple:
+
+```tb
+let my_tuple: (int, int, int) = (1, 2, 3);
+```
+
+But I can also *only* specify the type of the first element, and let the compiler infer the rest:
+
+```tb
+let my_tuple: (int64, _, _) = (1, 2, 3); // The compiler infers the type of the tuple to be (int64, int, int)
+```
+
+## Type Casting and Type Coercion
+
+Type casting is the process of converting a value from one type to another. Terbium has two types of type casting:
+*explicit* and *implicit*.
+
+*Explicit type casting* is simply known as *type casting* and is done using the `to` keyword. For example:
+
+```tb
+let my_int = 1;
+let my_float = my_int to float; // Explicitly cast my_int to a float
+
+assert_eq(my_float, 1.0);
+```
+
+*Implicit type casting* is known as *type coercion* and is done automatically by the compiler. For example:
+
+```tb
+let smaller_int: int32 = 1;
+let larger_int: int64 = smaller_int; // Implicitly cast smaller_int to an int64
+```
+
+Type coercion is *usually* done when the compiler can prove that the value will not lose any information when being cast
+to the new type. In the example above, the compiler knows that `smaller_int{:tb}`, a 32-bit integer, can be safely
+*widen* (i.e. cast to a larger bit-width) to an `int64{:tb}` without losing any information.

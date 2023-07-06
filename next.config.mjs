@@ -11,10 +11,10 @@ const withNextra = nextra({
   defaultShowCopyCode: true,
   mdxOptions: {
     rehypePrettyCodeOptions: {
-      // theme: {
-      //   dark: JSON.parse(readFileSync('./public/syntax/arctis_dark.json', 'utf-8')),
-      //   light: JSON.parse(readFileSync('./public/syntax/arctis_light.json', 'utf-8')),
-      // },
+      theme: {
+        dark: JSON.parse(readFileSync('./public/syntax/arctis_dark.json', 'utf-8')),
+        light: JSON.parse(readFileSync('./public/syntax/arctis_light.json', 'utf-8')),
+      },
       getHighlighter: options => getHighlighter({
         ...options,
         langs: [
